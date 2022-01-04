@@ -33,9 +33,12 @@ export default class NewBill {
         console.log("l'extension du fichier est " + extension);
         const extensionIsValid = ["jpg", "jpeg", "png"];
         // console.log(extensionIsValid.includes(extension))
+        // pour le message d'erreur si l'extension du justificatif n'est pas au bon format
+        let errorFileExtension = document.querySelector(".error-file-type");
 
         if (extensionIsValid.includes(extension)) {
             console.log("ok fichier valable");
+            errorFileExtension.classList.replace("visible", "hidden")
             this.store
                 .bills()
                 .create({
@@ -54,7 +57,7 @@ export default class NewBill {
             console.log("extension de fichier pas valable")
                 // supprime le fichier car il n'est pas au bon format
             document.querySelector(`input[data-testid="file"]`).value = null
-                // let errorFileExtension = "<span class='error-file-type'>seuls les jpg, jpeg et png sont acceptes</span>"
+            errorFileExtension.classList.replace("hidden", "visible")
             return false
         }
     }
