@@ -19,13 +19,12 @@ const row = (bill) => {
     `)
 }
 
-const rows = (data, options) => {
+const rows = (data) => {
+    // il manquait la fonction qui trie les dates en ordre anti-chronologique
     if (data && data.length) {
-        // il manquait la fonction qui trie les dates en ordre anti-chronologique
-        console.log(data)
-        const dataSorted = data.sort((a, b) => (a.date < b.date) ? 1 : -1);
-        console.log(dataSorted)
-        return (data && data.length) ? dataSorted.map(bill => row(bill)).join("") : "";
+        const dataSorted = data.sort((a, b) => (new Date(a.date) < new Date(b.date)) ? 1 : -1);
+        //  console.log(dataSorted)
+        return dataSorted.map(bill => row(bill)).join("");
     } else return '';
 }
 
