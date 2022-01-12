@@ -6,6 +6,7 @@ import USERS_TEST from '../constants/usersTest.js'
 import Logout from "./Logout.js"
 
 export const filteredBills = (data, status) => {
+    console.log(data)
     return (data && data.length) ?
         data.filter(bill => {
             let selectCondition
@@ -51,10 +52,12 @@ export const card = (bill) => {
 }
 
 export const cards = (bills) => {
+    console.log(bills)
     return bills && bills.length ? bills.map(bill => card(bill)).join("") : ""
 }
 
 export const getStatus = (index) => {
+    console.log(index)
     switch (index) {
         case 1:
             return "pending"
@@ -70,9 +73,9 @@ export default class {
         this.document = document
         this.onNavigate = onNavigate
         this.store = store
-        $('#arrow-icon1').on("click", (e) => this.handleShowTickets(e, bills, 1))
-        $('#arrow-icon2').on("click", (e) => this.handleShowTickets(e, bills, 2))
-        $('#arrow-icon3').on("click", (e) => this.handleShowTickets(e, bills, 3))
+        $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
+        $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))
+        $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))
         this.getBillsAllUsers()
         new Logout({ localStorage, onNavigate })
     }
@@ -86,9 +89,10 @@ export default class {
 
     handleEditTicket(e, bill, bills) {
         console.log(this.counter)
-            //console.log(e)
-        console.log(this.id)
+        console.log(bill)
+        console.log(bills)
         console.log(bill.id)
+        console.log(this.id)
         if (this.counter === undefined || this.id !== bill.id) this.counter = 0
         if (this.id === undefined || this.id !== bill.id) this.id = bill.id
         if (this.counter % 2 === 0) {
@@ -98,16 +102,19 @@ export default class {
             $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
             $('.dashboard-right-container div').html(DashboardFormUI(bill))
             $('.vertical-navbar').css({ height: '150vh' })
-                //  this.counter++
+            this.counter++
+                console.log(this.counter)
         } else {
             $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
+
             $('.dashboard-right-container div').html(`
         <div id="big-billed-icon"> ${BigBilledIcon} </div>
       `)
             $('.vertical-navbar').css({ height: '120vh' })
-                //  this.counter++
+            this.counter++
+                console.log(this.counter)
         }
-        console.log(this.counter)
+        e.stopImmediatePropagation()
         $('#icon-eye-d').click(this.handleClickIconEye)
         $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
         $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
@@ -134,9 +141,10 @@ export default class {
     }
 
     handleShowTickets(e, bills, index) {
-        console.log(this.counter)
+        console.log(bills)
         console.log(index)
         console.log(this.index)
+        console.log(this.counter)
         if (this.counter === undefined || this.index !== index) this.counter = 0
         if (this.index === undefined || this.index !== index) this.index = index
         if (this.counter % 2 === 0) {
@@ -151,17 +159,19 @@ export default class {
                 .html("")
             this.counter++
                 console.log(this.counter)
+
         }
+
         bills.forEach(bill => {
             $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
         })
-        console.log(index)
-        console.log(this.index)
+
         return bills
+
     }
 
     // not need to cover this function by tests
-    /* istanbul ignore next */
+    /* istanbul ignore test*/
     getBillsAllUsers = () => {
         if (this.store) {
             return this.store
@@ -182,7 +192,7 @@ export default class {
     }
 
     // not need to cover this function by tests
-    /* istanbul ignore next */
+    /* istanbul ignore test*/
     updateBill = (bill) => {
         if (this.store) {
             return this.store
