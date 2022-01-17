@@ -11,15 +11,6 @@ export default class {
         if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)
         const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
 
-        /*
-        // là il faut vérifier qu'il y a des notes de frais
-        // et pas seulement que l'icone est là
-        if (iconEye.length > 0)
-            iconEye.forEach((icon) => {
-                icon.addEventListener('click', (e) => this.handleClickIconEye(icon));
-            });
-        new Logout({ document, localStorage, onNavigate });*/
-
         if (iconEye) iconEye.forEach(icon => {
             icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
         })

@@ -18,7 +18,7 @@ export default class NewBill {
     handleChangeFile = e => {
         e.preventDefault()
         const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-            //console.log(file)
+        console.log(file)
         const filePath = e.target.value.split(/\\/g)
         const fileName = filePath[filePath.length - 1]
         console.log(fileName)
@@ -56,6 +56,7 @@ export default class NewBill {
         } else {
             console.log("extension de fichier pas valable")
                 // supprime le fichier car il n'est pas au bon format
+                // de cette manière ça empêche l'envoi de la note
             document.querySelector(`input[data-testid="file"]`).value = null
             errorFileExtension.classList.replace("hidden", "visible")
             return false
@@ -84,6 +85,7 @@ export default class NewBill {
     }
 
     // not need to cover this function by tests
+    /* istanbul ignore next */
     updateBill = (bill) => {
         if (this.store) {
             this.store

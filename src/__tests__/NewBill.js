@@ -10,11 +10,22 @@ import Logout from "./Logout.js"
 
 
 describe("Given I am connected as an employee", () => {
-    describe("When I am on NewBill Page", () => {
-        test("Then ...", () => {
+    skip.describe("When I am on NewBill Page", () => {
+
+        //ajout test fonction ouvrir nouvelle note de frais
+        test("Then i click on nouvelle note de frais", () => {
             const html = NewBillUI()
             document.body.innerHTML = html
                 //to-do write assertion
+
+            const onNavigate = (pathname) => {
+                document.body.innerHTML = ROUTES({ pathname })
+            }
+
+            Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+            window.localStorage.setItem('user', JSON.stringify({
+                type: 'Employee'
+            }))
         })
     })
 

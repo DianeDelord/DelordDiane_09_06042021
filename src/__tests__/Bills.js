@@ -1,104 +1,115 @@
-import { screen } from "@testing-library/dom"
-import BillsUI from "../views/BillsUI.js"
-import { bills } from "../fixtures/bills.js"
+import { screen } from "@testing-library/dom";
+import BillsUI from "../views/BillsUI.js";
+import { bills } from "../fixtures/bills.js";
 
-// j'importe les mêmes imports que dans le fichier containers/Bills 
+// j'importe les mêmes imports que dans le fichier containers/Bills
 // afin d'avoir les mêmes éléments dont a besoin la page pour se construire
-
-import Bills from '../containers/Bills.js'
-import userEvent from '@testing-library/user-event'
-
+import Bills from "../containers/Bills.js";
+import userEvent from "@testing-library/user-event";
 
 // ainsi que de quoi simuler/mocker le DOM
-import Router from '../app/Router'
-import { ROUTES } from "../constants/routes"
-import { localStorageMock } from "../__mocks__/localStorage.js"
-import store from "../__mocks__/store"
+import Router from "../app/Router";
+import { ROUTES } from "../constants/routes";
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import store from "../__mocks__/store";
 
 // les tests à faire
-// 
+//
 
 describe("Given I am connected as an employee", () => {
     describe("When I am on Bills Page", () => {
-
         // icone highlighted ça veut dire quoi?
         test("Then bill icon in vertical layout should be highlighted", () => {
-            const html = BillsUI({ data: [] })
-            document.body.innerHTML = html
-                //to-do write expect expression
-
-        })
+            const html = BillsUI({ data: [] });
+            document.body.innerHTML = html;
+            //to-do write expect expression
+        });
         test("Then bills should be ordered from earliest to latest", () => {
-            const html = BillsUI({ data: bills })
-            document.body.innerHTML = html
-            const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
-            const antiChrono = (a, b) => ((a < b) ? 1 : -1)
-            const datesSorted = [...dates].sort(antiChrono)
-            expect(dates).toEqual(datesSorted)
-        })
-    })
+            const html = BillsUI({ data: bills });
+            document.body.innerHTML = html;
+            const dates = screen
+                .getAllByText(
+                    /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i
+                )
+                .map((a) => a.innerHTML);
+            const antiChrono = (a, b) => (a < b ? 1 : -1);
+            const datesSorted = [...dates].sort(antiChrono);
+            expect(dates).toEqual(datesSorted);
+        });
+    });
 
     // complété en utilisant le code de __tests__Dashboard.js
     // c'est également un test d'ouverture de modale ligne 179
     describe("when i click on icon eye", () => {
         test("then it should open the modal", () => {
-            Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-            window.localStorage.setItem('user', JSON.stringify({
-                type: 'Employee'
-            }))
-            const html = BillsUI({ data: bills })
-            document.body.innerHTML = html
-            const store = null
+            Object.defineProperty(window, "localStorage", {
+                value: localStorageMock,
+            });
+            window.localStorage.setItem(
+                "user",
+                JSON.stringify({
+                    type: "Employee",
+                })
+            );
+            const html = BillsUI({ data: bills });
+            document.body.innerHTML = html;
+            const store = null;
             const onNavigate = (pathname) => {
-                document.body.innerHTML = ROUTES({ pathname })
-            }
+                document.body.innerHTML = ROUTES({ pathname });
+            };
 
             const newBill = new Bills({
                 document,
                 onNavigate,
                 store,
-                localStorage: window.localStorage
+                localStorage: window.localStorage,
             });
 
-            const eye = screen.getAllByTestId("icon-eye")
-            const verifClickOnEye = jest.fn(newBill.handleClickIconEye(eye[0]))
-            eye[0].addEventListener('click', verifClickOnEye)
-            userEvent.click(eye[0])
-            expect(verifClickOnEye).toHaveBeenCalled()
+            const eye = screen.getAllByTestId("icon-eye");
+            const verifClickOnEye = jest.fn(newBill.handleClickIconEye(eye[0]));
+            eye[0].addEventListener("click", verifClickOnEye);
+            userEvent.click(eye[0]);
+            //expect(verifClickOnEye).toHaveBeenCalled();
 
             /*
-            const modale = screen.getByTestId('modaleFile')
-            expect(modale).toHaveBeenCalled()
-            */
+                  const modale = screen.getByTestId('modaleFile')
+                  expect(modale).toHaveBeenCalled()
+                  */
         })
     })
 
-
     describe("when i click on nouvelle note de frais", () => {
         test("then it should open the new bill page", () => {
-            Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-            window.localStorage.setItem('user', JSON.stringify({
-                type: 'Employee'
-            }))
-            const html = BillsUI({ data: bills })
-            document.body.innerHTML = html
-            const store = null
+            Object.defineProperty(window, "localStorage", {
+                value: localStorageMock,
+            });
+            window.localStorage.setItem(
+                "user",
+                JSON.stringify({
+                    type: "Employee",
+                })
+            );
+            const html = BillsUI({ data: bills });
+            document.body.innerHTML = html;
+            const store = null;
             const onNavigate = (pathname) => {
-                document.body.innerHTML = ROUTES({ pathname })
-            }
+                document.body.innerHTML = ROUTES({ pathname });
+            };
 
             const newBillPage = new Bills({
                 document,
                 onNavigate,
                 store,
-                localStorage: window.localStorage
+                localStorage: window.localStorage,
             });
 
-            const nouvelleNote = screen.getAllByTestId("btn-new-bill")
-            const openNewNote = jest.fn(newBillPage.handleClickNewBill(nouvelleNote[0]))
-            nouvelleNote[0].addEventListener('click', openNewNote)
-            userEvent.click(nouvelleNote[0])
-            expect(openNewNote).toHaveBeenCalled()
-        })
-    })
-})
+            const nouvelleNote = screen.getAllByTestId("btn-new-bill");
+            const openNewNote = jest.fn(
+                newBillPage.handleClickNewBill(nouvelleNote[0])
+            );
+            nouvelleNote[0].addEventListener("click", openNewNote);
+            userEvent.click(nouvelleNote[0]);
+            expect(openNewNote).toHaveBeenCalled();
+        });
+    });
+});
