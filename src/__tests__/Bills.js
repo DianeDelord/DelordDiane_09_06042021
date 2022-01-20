@@ -6,6 +6,7 @@ import { bills } from "../fixtures/bills.js";
 // afin d'avoir les mêmes éléments dont a besoin la page pour se construire
 import Bills from "../containers/Bills.js";
 import userEvent from "@testing-library/user-event";
+import VerticalLayout from "../views/VerticalLayout";
 
 // ainsi que de quoi simuler/mocker le DOM
 import Router from "../app/Router";
@@ -25,21 +26,17 @@ describe("Given I am connected as an employee", () => {
             //to-do write expect expression
         });
         test("Then bills should be ordered from earliest to latest", () => {
-            const html = BillsUI({ data: bills });
-            document.body.innerHTML = html;
-            const dates = screen
-                .getAllByText(
-                    /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i
-                )
-                .map((a) => a.innerHTML);
-            const antiChrono = (a, b) => (a < b ? 1 : -1);
-            const datesSorted = [...dates].sort(antiChrono);
-            expect(dates).toEqual(datesSorted);
+            const html = BillsUI({ data: bills })
+            document.body.innerHTML = html
+            const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
+            const antiChrono = (a, b) => ((a < b) ? 1 : -1)
+            const datesSorted = [...dates].sort(antiChrono)
+            expect(dates).toEqual(datesSorted)
         });
     });
 
     // complété en utilisant le code de __tests__Dashboard.js
-    // c'est également un test d'ouverture de modale ligne 179
+    // c'est également un test d'ouverture de modale à la ligne 179
     describe("when i click on icon eye", () => {
         test("then it should open the modal", () => {
             Object.defineProperty(window, "localStorage", {
@@ -64,17 +61,26 @@ describe("Given I am connected as an employee", () => {
                 store,
                 localStorage: window.localStorage,
             });
+            newBill.handleClickIconEye = jest.fn();
 
             const eye = screen.getAllByTestId("icon-eye");
+            expect(eye[0]).toBeTruthy()
             const verifClickOnEye = jest.fn(newBill.handleClickIconEye(eye[0]));
             eye[0].addEventListener("click", verifClickOnEye);
             userEvent.click(eye[0]);
-            //expect(verifClickOnEye).toHaveBeenCalled();
+            expect(verifClickOnEye).toHaveBeenCalled();
+            // doublon expect(newBill.handleClickIconEye).toBeCalled();
 
             /*
-                  const modale = screen.getByTestId('modaleFile')
-                  expect(modale).toHaveBeenCalled()
-                  */
+                        const modal = screen.getByTestId("modal-show");
+                        $.fn.modal = jest.fn();
+
+                        expect(modal).toBeTruthy();
+                        expect(screen.getByText("Justificatif")).toBeTruthy();
+
+                        const urlJustif = bills[0].fileUrl;
+                        expect(urlJustif).toBeTruthy();
+                        */
         })
     })
 
@@ -89,7 +95,7 @@ describe("Given I am connected as an employee", () => {
                     type: "Employee",
                 })
             );
-            const html = BillsUI({ data: bills });
+            const html = BillsUI({ data: [...bills] });
             document.body.innerHTML = html;
             const store = null;
             const onNavigate = (pathname) => {
@@ -104,6 +110,7 @@ describe("Given I am connected as an employee", () => {
             });
 
             const nouvelleNote = screen.getAllByTestId("btn-new-bill");
+            expect(nouvelleNote).toBeTruthy()
             const openNewNote = jest.fn(
                 newBillPage.handleClickNewBill(nouvelleNote[0])
             );
@@ -111,5 +118,20 @@ describe("Given I am connected as an employee", () => {
             userEvent.click(nouvelleNote[0]);
             expect(openNewNote).toHaveBeenCalled();
         });
+    });
+
+    // oading page BillsUI
+    test('Then, Loading page should be rendered', () => {
+        Object.defineProperty(window, "localStorage", {
+            value: localStorageMock,
+        });
+        window.localStorage.setItem(
+            "user",
+            JSON.stringify({
+                type: "Employee",
+            })
+        );
+        document.body.innerHTML = BillsUI({ loading: true });
+        expect(screen.getAllByText('Loading...')).toBeTruthy();
     });
 });
