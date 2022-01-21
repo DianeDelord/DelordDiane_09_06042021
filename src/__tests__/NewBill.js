@@ -41,7 +41,6 @@ describe("Given I am connected as an employee", () => {
         })
     })
 
-
     // ajout d'un test qui vérifie si l'extension du justificatif est autorisée
     describe("when i select a justificatif", () => {
         test("then the file uploaded is changed", () => {
@@ -79,18 +78,6 @@ describe("Given I am connected as an employee", () => {
 
             expect(handleChangeFile).toHaveBeenCalled();
             expect(justif.files[0].name).toBe("justif.png");
-
-            /*const errorMessage = screen.getElementsByClassName('error-file-type');
-            expect(errorMessage.textContent).toEqual(
-                expect.stringContaining(
-                    'Seuls les fichiers .jpg, .jpeg et .png sont acceptés.'
-                )
-            );*/
-
-            //pas nécessaire
-            // expect(screen.getAllByText('Seuls les fichiers .jpg, .jpeg et .png sont acceptés.')).not.toBeVisible();
-
-            // expect(errorMessage).toBeVisible()
         });
     })
 
@@ -205,15 +192,6 @@ describe("Given I am connected as an employee", () => {
 
         expect(handleChangeFile).toHaveBeenCalled();
         expect(attachedFile.files[0].name).toBe('justif.pdf');
-
-        /*
-        const errorMessage = screen.getElementsByClassName('error-file-type');
-        expect(errorMessage.textContent).toEqual(
-            expect.stringMatching(
-                'Seuls les fichiers .jpg, .jpeg et .png sont acceptés.'
-            )
-        );*/
-
         expect(screen.getByText("Seuls les fichiers .jpg, .jpeg et .png sont acceptés.")).toBeVisible();
     })
 
@@ -261,8 +239,6 @@ describe('Given I am connected as an employee', () => {
             const postSpy = jest.spyOn(store, 'post');
             const testToPost = await store.post(bill);
             expect(postSpy).toHaveBeenCalledTimes(1)
-
-            //expect(testToPost.data.length).toBe(1)
         })
 
         // si y'a une erreur 404 ou 500
