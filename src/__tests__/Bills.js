@@ -26,7 +26,7 @@ describe("Given I am connected as an employee", () => {
             //to-do write expect expression
         });
         test("Then bills should be ordered from earliest to latest", () => {
-            const html = BillsUI({ data: bills })
+            const html = Bills({ data: bills })
             document.body.innerHTML = html
             const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
             const antiChrono = (a, b) => ((a < b) ? 1 : -1)
@@ -39,37 +39,30 @@ describe("Given I am connected as an employee", () => {
     // c'est également un test d'ouverture de modale à la ligne 179
     describe("when i click on icon eye", () => {
         test("then it should open the modal", () => {
-            Object.defineProperty(window, "localStorage", {
-                value: localStorageMock,
-            });
-            window.localStorage.setItem(
-                "user",
-                JSON.stringify({
-                    type: "Employee",
-                })
-            );
             const html = BillsUI({ data: bills });
             document.body.innerHTML = html;
+
             const store = null;
             const onNavigate = (pathname) => {
                 document.body.innerHTML = ROUTES({ pathname });
             };
 
-            const newBill = new Bills({
+            const mockBills = new Bills({
                 document,
                 onNavigate,
                 store,
                 localStorage: window.localStorage,
             });
-            newBill.handleClickIconEye = jest.fn();
+            $.fn.modal = jest.fn();
 
             const eye = screen.getAllByTestId("icon-eye");
-            expect(eye[0]).toBeTruthy()
-            const verifClickOnEye = jest.fn(newBill.handleClickIconEye(eye[0]));
+            const verifClickOnEye = jest.fn(mockBills.handleClickIconEye(eye[0]));
             eye[0].addEventListener("click", verifClickOnEye);
+            expect(eye[0]).toBeTruthy()
+
             userEvent.click(eye[0]);
             expect(verifClickOnEye).toHaveBeenCalled();
-            // doublon expect(newBill.handleClickIconEye).toBeCalled();
+            // doublon expect(mockBills.handleClickIconEye).toBeCalled(1);
 
             /*
                         const modal = screen.getByTestId("modal-show");
@@ -102,7 +95,7 @@ describe("Given I am connected as an employee", () => {
                 document.body.innerHTML = ROUTES({ pathname });
             };
 
-            const newBillPage = new Bills({
+            const mockBills = new Bills({
                 document,
                 onNavigate,
                 store,
@@ -112,7 +105,7 @@ describe("Given I am connected as an employee", () => {
             const nouvelleNote = screen.getAllByTestId("btn-new-bill");
             expect(nouvelleNote).toBeTruthy()
             const openNewNote = jest.fn(
-                newBillPage.handleClickNewBill(nouvelleNote[0])
+                mockBills.handleClickNewBill(nouvelleNote[0])
             );
             nouvelleNote[0].addEventListener("click", openNewNote);
             userEvent.click(nouvelleNote[0]);
@@ -120,7 +113,7 @@ describe("Given I am connected as an employee", () => {
         });
     });
 
-    // oading page BillsUI
+    // Loading page BillsUI
     test('Then, Loading page should be rendered', () => {
         Object.defineProperty(window, "localStorage", {
             value: localStorageMock,
